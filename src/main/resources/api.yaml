@@ -1,0 +1,286 @@
+swagger: '2.0'
+info:
+  description: |
+    Esta es la api de Registro de Asistencia
+  version: 1.0.0
+  title: Registro de Asistencia
+  contact:
+    name: enormann@santafe.gov.ar
+basePath: /swaggerparser/api
+tags:
+  - name: tipoinasistencia
+    description: Operaciones sobre los tipos de inasistencia
+  - name: periodo
+    description: Operaciones sobre los periodos
+schemes:
+  - http
+  - https
+paths:
+  /tipoinasistencia:
+    get:
+      tags:
+        - tipoinasistencia
+      summary: Buscar tipos de inasistencia
+      operationId: getTipoInasistencia
+      externalDocs:
+        description: ver implementacion en requerimiento 19533 tarea 5207
+        url: 'https://www.santafe.gob.ar/meapp/'
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Ok
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/TipoInasistencia'
+  /periodo/{idSeccion}:
+    get:
+      tags:
+        - periodo
+      summary: Buscar periodos para asistencia
+      description: Dada una seccion y un ciclo lectivo listar los posibles periodos
+      operationId: getPeriodos
+      externalDocs:
+        description: ver implementacion en requerimiento 19533 tarea 5167
+        url: 'https://www.santafe.gob.ar/meapp/'
+      produces:
+        - application/json
+      parameters:
+        - name: idSeccion
+          in: path
+          description: la seccion del periodo
+          required: true
+          type: integer
+          format: int64
+        - name: cicloLectivo
+          description: ciclo lectivo del periodo
+          in: query
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: Ok
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Periodo'
+  /ciclolectivo:
+    get:
+      tags:
+        - ciclolectivo
+      summary: listado de ciclos lectivos
+      operationId: getCiclos
+      externalDocs:
+        description: ver implementacion en requerimiento 19533 tarea 5348
+        url: 'https://www.santafe.gob.ar/meapp/'
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Ok
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/CicloLectivo'
+  /inasistenciamotivo:
+    get:
+      tags:
+        - inasistencia
+      summary: listado de todos los motivos de inasistencia
+      operationId: getMotivosInasistencia
+      externalDocs:
+        description: ver implementacion en algun lugar
+        url: 'https://www.santafe.gob.ar/meapp/'
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Ok
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/InasistenciaMotivo'
+  /inasistencia:
+    get:
+      tags:
+        - inasistencia
+      summary: Buscar inasistencias
+      description: listar inasistencias
+      operationId: getInasistencias
+      externalDocs:
+        description: ver implementacion en requerimiento 19533 tarea 5229
+        url: 'https://www.santafe.gob.ar/meapp/'
+      produces:
+        - application/json
+      parameters:
+        - name: idSeccion
+          in: query
+          description: la seccion del periodo
+          required: true
+          type: integer
+          format: int64
+        - name: cicloLectivo
+          description: ciclo lectivo del periodo
+          in: query
+          required: true
+          type: integer
+          format: int64
+        - name: fechaDesde
+          in: query
+          required: true
+          type: string
+        - name: fechaHasta
+          in: query
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Ok
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Inasistencia'
+    put:
+      tags:
+        - inasistencia
+      summary: modifica el estado de una inasistencia
+      operationId: updateInasistencia
+      externalDocs:
+        description: ver implementacion en requerimiento 19533 tarea 6027
+        url: 'https://www.santafe.gob.ar/meapp/'
+      produces:
+        - application/json
+      parameters:
+        - name: inasistencia
+          in: body
+          description: la seccion del periodo
+          required: true
+          schema:
+            $ref: '#/definitions/Inasistencia'
+      responses:
+        '200':
+          description: Ok
+definitions:
+  Periodo:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: el id de la tabla
+        format: int64
+        example: 1
+      evaluacionPeriodo:
+        description: el periodo
+        type: string
+        example: 1º Periodo
+      cicloLectivo:
+        type: integer
+        description: el ciclo lectivo
+        format: int64
+        example: 2017
+      tipoEvaluacion:
+        description: tipo evaluacion
+        type: string
+        example: Común primario de primero a sexto
+      fechaDesde:
+        description: la fecha desde
+        type: string
+        format: date
+        example: 22/06/2016
+      fechaHasta:
+        description: la fecha hasta
+        type: string
+        format: date
+        example: 22/06/2016
+      habilitadoDesde:
+        description: la fecha habilitadoDesde
+        type: string
+        format: date
+        example: 22/06/2016
+      habilitadoHasta:
+        description: la fecha habilitadoHasta
+        type: string
+        format: date
+        example: 22/06/2016
+  TipoInasistencia:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: el id de la tabla
+        format: int64
+        example: 2
+      tipoInasistencia:
+        description: tipo de inasistencia
+        type: string
+        example: Media
+      pesoInasistencia:
+        description: el peso de la inasistencia
+        type: number
+        format: float
+        example: 0.5
+  CicloLectivo:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: >-
+          no es un id en si, sino una clave para el objeto json que tiene el
+          mismo valor que el cicloLectivo
+        format: int64
+        example: 2017
+      cicloLectivo:
+        description: 'el ciclo, igual que el id'
+        type: number
+        format: int64
+        example: 2017
+  Inasistencia:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: el id de LA_INASISTENCIA
+        format: int64
+        example: 3831
+      fecha:
+        description: la fecha de la inasistencia
+        type: string
+        format: date
+        example: 02/09/2017
+      idTipoInasistencia:
+        type: integer
+        description: el id del tipo
+        format: int64
+        example: 3831
+      idInscripcionGrpAlu:
+        type: integer
+        description: el id de la iga
+        format: int64
+        example: 3831
+      esJustificada:
+        type: boolean
+        description: 'true si es justificada, false en otro caso'
+        example: true
+      idMotivo:
+        type: integer
+        description: el id del motivo de la inasistencia
+        format: int64
+        example: 3831
+      observacion:
+        description: una observacion
+        type: string
+        example: adjunta certificado
+  InasistenciaMotivo:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: el id del motivo
+        format: int64
+        example: 1
+      motivo:
+        description: un texto que define el motivo
+        type: string
+        example: ENFERMEDAD
