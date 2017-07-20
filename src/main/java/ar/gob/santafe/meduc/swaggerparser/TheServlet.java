@@ -48,7 +48,7 @@ public class TheServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        if (request.getRequestURI().contains("swagger.yaml")) {
+        if (request.getRequestURI().contains("api.yaml")) {
             response.setContentType("application/x-yaml;charset=UTF-8");
             response.getWriter().print(swaggerImpl.getSwaggerString());
         } else {
