@@ -9,7 +9,6 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,8 +18,7 @@ import javax.sql.DataSource;
  *
  * @author enorrmann
  */
-@WebServlet(name = "TheServlet", urlPatterns = {"/api/*"})
-public class TheServlet extends HttpServlet {
+public class SwaggerServlet extends HttpServlet {
 
     private String read(String resource) throws IOException {
         InputStream input = getServletContext().getResourceAsStream(resource);
@@ -28,10 +26,12 @@ public class TheServlet extends HttpServlet {
             return buffer.lines().collect(Collectors.joining(System.lineSeparator()));
         }
     }
-    @Resource(name = "jdbc/libreta") // para tomcat -> name
-    //@Resource(lookup = "jdbc/libreta") // para glassfish 4 -> lookup
-    private DataSource dataSource;
+    protected DataSource dataSource;
     private SwaggerImpl swaggerImpl;
+
+    protected void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     @Override
     public void init() {
@@ -41,7 +41,7 @@ public class TheServlet extends HttpServlet {
             String scriptString = read("/WEB-INF/classes/impl.groovy");
             this.swaggerImpl = new SwaggerImpl(swaggerString, scriptString, dataSource);
         } catch (IOException ex) {
-            Logger.getLogger(TheServlet.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SwaggerServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -63,55 +63,30 @@ public class TheServlet extends HttpServlet {
                 }
             } catch (Exception e) {
                 response.sendError(500, e.getMessage());
-                Logger.getLogger(TheServlet.class.getName()).log(Level.SEVERE, null, e);
+                Logger.getLogger(SwaggerServlet.class.getName()).log(Level.SEVERE, null, e);
             }
         }
 
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processRequest(request, response);
     }
 
     @Override
-    protected void doPut(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processRequest(request, response);
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processRequest(request, response);
     }
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
     @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        processRequest(request, response);
+    }
 
 }

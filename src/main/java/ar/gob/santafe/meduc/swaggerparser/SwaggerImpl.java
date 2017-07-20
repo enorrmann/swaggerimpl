@@ -161,7 +161,7 @@ public class SwaggerImpl {
 
             }
         } catch (Exception ex) {
-            Logger.getLogger(TheServlet.class
+            Logger.getLogger(SwaggerServlet.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
         return parameters;
